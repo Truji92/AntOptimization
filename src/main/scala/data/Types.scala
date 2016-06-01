@@ -6,7 +6,7 @@ package data
 object Types {
 
   type MatrizCoste = Vector[Vector[Int]]
-  type MatrizFeromonas = Vector[Vector[Int]]
+  type MatrizFeromonas = Vector[Vector[Double]]
 
   type CityCoord = (Double, Double)
 

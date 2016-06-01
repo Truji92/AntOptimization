@@ -3,30 +3,65 @@ package algorithms
 import data.Problem
 import data.Types._
 
+import scala.annotation.tailrec
+import scala.collection.parallel.immutable.ParVector
+import scala.concurrent.duration._
+import scala.language.postfixOps
 import scala.util.Random
 
 object SH {
 
   val alpha = 1
   val beta = 2
-  val n_Ants = 20
+  val nAnts = 20
+  val evaporationRatio = 0.1
+  val MaxTime = 5 minutes
 
-  def apply(problem: Problem, random: Random) = {
+  def apply(problem: Problem, random: Random): (Solution, Int) = {
 
     val Problem(n, costes, _, greedy) = problem
 
+    @tailrec
+    def feromoneIteration(feromonas: MatrizFeromonas, bestCost: Int, bestSolution: Solution, startTime: Long, iterations: Int): (Solution, Int) = {
+      val elapsed = (System.currentTimeMillis() - startTime) millis
 
-    def feromoneIteration(feromonas: MatrizFeromonas) = {
+      println("elapsed " + elapsed.toMinutes +":"+elapsed.toSeconds%60)
+      if (elapsed >= MaxTime) (bestSolution, iterations)
+      else {
+        val ants = (random.shuffle(1 to n-1).toVector take nAnts).map(city => {
+          val ant = new Ant(costes, city, transitionRule(random)(n)(costes)(feromonas))
+          ant
+        })
 
+        val bestAnt = ants minBy(ant => ant.fullCost)
+        val currentBest =
+          if (bestAnt.fullCost < bestCost)
+            (bestAnt.fullCost, bestAnt.path)
+          else
+            (bestCost, bestSolution)
+
+        val newFeromonas = updateFeromonas(feromonas, ants)
+
+        feromoneIteration(newFeromonas, currentBest._1, currentBest._2, startTime, iterations + 1)
+      }
     }
 
+    val (greedySolCost, greedySol) = greedy(random.nextInt(n))
+    val initialFeromones = Vector.fill(n,n)( 1d / (n * greedySolCost) )
+
+    feromoneIteration(initialFeromones, greedySolCost.toInt, greedySol, System.currentTimeMillis(), 0)
   }
 
+  def updateFeromonas(oldFeromonas: MatrizFeromonas, ants: Vector[Ant]) =
+    Vector.tabulate(oldFeromonas.length, oldFeromonas.length)((i, j) =>
+      (1-evaporationRatio)*oldFeromonas(i)(j) + ants.map(_.aporte(i,j)).sum
+    )
+
   def transitionRule(random: Random)(size: Int)(coste: MatrizCoste)(matrizFeromonas: MatrizFeromonas)(solution: Solution, city: City) = {
-    val nodeValues = 0 until size map(i => {
+    val nodeValues = (0 until size) map(i => {
       if (solution.contains(i)) 0
       else
-        math.pow(coste(city)(i), alpha) * math.pow(matrizFeromonas(city)(i), beta)
+        math.pow(matrizFeromonas(city)(i), alpha) * math.pow(1d/coste(city)(i), beta)
     })
 
     val denom = nodeValues.sum

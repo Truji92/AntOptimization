@@ -9,7 +9,7 @@ import scala.language.postfixOps
 /**
   * Created by alejandro on 29/05/16.
   */
-case class Problem(size: Int, costes: MatrizCoste, cities: Vector[CityCoord], greedy: Int => Double)
+case class Problem(size: Int, costes: MatrizCoste, cities: Vector[CityCoord], greedy: Int => (Double, Vector[Int]))
 
 object Problem {
   def fromFile(file: String) = {
@@ -17,7 +17,10 @@ object Problem {
 
     util.calculaMatrices()
 
-    val greedy = util.greedy _
+    val greedy = (i: Int) => {
+      val sol = util.greedy(i)
+      (sol.coste.toDouble, sol.solution.asScala.toVector.map(_.toInt))
+    }
 
     val coord1 = util.getCoord1.asScala.toVector.map(_.toDouble)
     val coord2 = util.getCoord2.asScala.toVector.map(_.toDouble)

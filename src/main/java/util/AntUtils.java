@@ -175,7 +175,16 @@ public class AntUtils {
         }
     }
 
-    public double greedy(int ciudad_inicial) {
+    public class Sol {
+        public int coste;
+        public Vector<Integer> solution;
+        public Sol(int coste, Vector<Integer> solution) {
+            this.coste = coste;
+            this.solution = solution;
+        }
+    }
+
+    public Sol greedy(int ciudad_inicial) {
         double coste_total = 0;
         double min = -1;
         int cs = ciudad_inicial;
@@ -202,7 +211,8 @@ public class AntUtils {
         // Le sumamos el coste desde la ultima ciudad a la inicial de nuevo
         // para cerrar el trayecto
         coste_total = coste_total + matrizCosto[cs][ciudad_inicial];
-        return coste_total;
+
+        return new Sol((int)coste_total, visitados);
     }
 
     public void iniMatrizFerom(double ferom_ini) {

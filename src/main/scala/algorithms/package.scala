@@ -9,5 +9,7 @@ package object algorithms {
       val k = solution(i+1)
       acc = acc + costes(j)(k)
     }
+    acc = acc + costes(solution.last)(solution.head)
+    acc
   }
 }
