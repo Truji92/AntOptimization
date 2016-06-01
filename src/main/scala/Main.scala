@@ -1,4 +1,4 @@
-import algorithms.{SHE, SH}
+import algorithms.{SCH, SHE, SH}
 import data.Problem
 
 import scala.util.Random
@@ -14,7 +14,7 @@ object Main {
 //    println("greedy: " + greedy(0))
 //    println(algorithms.cost(costes, greedy(0)._2))
 
-    val r = SHE(Problem.ch130, new Random)
+    val r = SCH(Problem.ch130, new Random)
 
 
     println("Sol " + r._1)
