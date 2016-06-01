@@ -40,6 +40,9 @@ object SH {
           else
             (bestCost, bestSolution)
 
+        println(bestAnt.fullCost)
+        println(bestAnt.path.length)
+
         val newFeromonas = updateFeromonas(feromonas, ants)
 
         feromoneIteration(newFeromonas, currentBest._1, currentBest._2, startTime, iterations + 1)
