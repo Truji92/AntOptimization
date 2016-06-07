@@ -31,6 +31,8 @@ object Problem {
   }
 
   val ch130 = Problem.fromFile(getClass.getResource("/tsp/ch130.tsp").getPath)
+  val a280 = Problem.fromFile(getClass.getResource("/tsp/a280.tsp").getPath)
+  val p654 = Problem.fromFile(getClass.getResource("/tsp/p654.tsp").getPath)
 //  val a280 = Problem.fromFile("../tsp/a280.tsp")
 //  val p654 = Problem.fromFile("../tsp/p654")
 }

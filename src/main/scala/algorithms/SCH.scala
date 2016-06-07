@@ -17,7 +17,7 @@ object SCH {
   val nAnts = 20
   val evaporationRatio = 0.1
   val elitistAnts = nAnts
-  val MaxTime = 5 minutes
+  var MaxTime = 5 minutes
   val q_0 = 0.98
 
   val localEvap = 0.1
@@ -39,7 +39,7 @@ object SCH {
     def feromoneIteration(feromonas: MatrizFeromonas, gBestAnt: SCHAnt, startTime: Long, iterations: Int): (Solution, Int) = {
       val elapsed = (System.currentTimeMillis() - startTime) millis
 
-      println("elapsed " + elapsed.toMinutes +":"+elapsed.toSeconds%60)
+//      println("elapsed " + elapsed.toMinutes +":"+elapsed.toSeconds%60)
       if (elapsed >= MaxTime) (gBestAnt.path, iterations)
       else {
         val ants = (random.shuffle(1 to n-1).toVector take nAnts).map(city => {
@@ -68,7 +68,7 @@ object SCH {
           else
             gBestAnt
 
-        println(currentBest.fullCost)
+//        println(currentBest.fullCost)
 
         val newFeromonas = updateFeromonas(_feromonas, ants, currentBest)
 
